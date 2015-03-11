@@ -151,19 +151,12 @@ data2$weekday<-factor(weekdays(as.Date(data2$date, "%Y-%m-%d")) %in% c("Saturday
 Finally, to compare the differences between weekday and weekend days, we will plot both data, head to head, so we can compare the steps on both type of  days:
 
 ```{r h2h}
-#let's split intos weekday and weekend
-data2_weekday <- data2[data2$weekday == "weekday",]
-data2_weekend <- data2[data2$weekday == "weekend",]
 
 #calculate means
-data_interval_weekday<-ddply(data2_weekday,~interval,summarise,mean=mean(steps,na.rm = TRUE))
-data_interval_weekend<-ddply(data2_weekend,~interval,summarise,mean=mean(steps,na.rm = TRUE))
-
+data2_interval<-ddply(data2,.(interval,weekday),summarise,mean=mean(steps,na.rm = TRUE))
 
 #Let's render both on teh same graphic
-par(mfrow=c(2,1))
-plot( mean ~ interval, data_interval_weekend, type = "l", main="Weekend")
-plot( mean ~ interval, data_interval_weekday, type = "l", main="Weekday")
-
+library (lattice)
+xyplot(mean~interval|weekday, main="Patterns", ylab="Steps", xlab="Interval", data = data2_interval, type = 'l', layout = c(1,2))
 
 ```
